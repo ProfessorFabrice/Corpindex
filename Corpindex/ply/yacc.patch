@@ -1,0 +1,65 @@
+--- ply-3.3-orig/ply/yacc.py	2009-09-02 16:27:23.000000000 +0200
++++ ply-3.3-patched/ply/yacc.py	2010-04-13 11:30:28.753330468 +0200
+@@ -303,7 +303,7 @@
+ 
+         # If input was supplied, pass to lexer
+         if input is not None:
+-            lexer.input(input)
++            lexer.input(input.readline())
+ 
+         if tokenfunc is None:
+            # Tokenize function
+@@ -341,6 +341,11 @@
+             if not lookahead:
+                 if not lookaheadstack:
+                     lookahead = get_token()     # Get the next token
++                    
++                    # If we finished with the current line, then process the next
++                    if lookahead is None and input is not None:
++                        lexer.input(input.readline());
++                        lookahead = get_token()     # Get the next token
+                 else:
+                     lookahead = lookaheadstack.pop()
+                 if not lookahead:
+@@ -614,7 +619,7 @@
+ 
+         # If input was supplied, pass to lexer
+         if input is not None:
+-            lexer.input(input)
++            lexer.input(input.readline())
+ 
+         if tokenfunc is None:
+            # Tokenize function
+@@ -647,6 +652,11 @@
+             if not lookahead:
+                 if not lookaheadstack:
+                     lookahead = get_token()     # Get the next token
++
++                    # If we finished with the current line, then process the next
++                    if lookahead is None and input is not None:
++                        lexer.input(input.readline());
++                        lookahead = get_token()     # Get the next token 
+                 else:
+                     lookahead = lookaheadstack.pop()
+                 if not lookahead:
+@@ -886,7 +896,7 @@
+ 
+         # If input was supplied, pass to lexer
+         if input is not None:
+-            lexer.input(input)
++            lexer.input(input.readline())
+ 
+         if tokenfunc is None:
+            # Tokenize function
+@@ -919,6 +929,11 @@
+             if not lookahead:
+                 if not lookaheadstack:
+                     lookahead = get_token()     # Get the next token
++
++                    # If we finished with the current line, then process the next
++                    if lookahead is None and input is not None:
++                        lexer.input(input.readline());
++                        lookahead = get_token()     # Get the next token
+                 else:
+                     lookahead = lookaheadstack.pop()
+                 if not lookahead:
