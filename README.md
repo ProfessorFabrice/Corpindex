@@ -6,15 +6,15 @@ ressources dictionnairiques. Il est possible de traiter des textes
 bruts, uniquement composés de caractères, ou déjà étiquetés et de
 proposer un langage de requête de haut niveau.
 
-La bibliothèque est écrite en [python]{.sans-serif}[^3] et peut être
+La bibliothèque est écrite en [python][^3] et peut être
 utilisée aussi bien en ligne de commande qu'au sein d'applications
 graphiques. Cette bibliothèque a été écrite non pas pour
 « *l'utilisateur final non spécialiste en informatique* » mais au
 contraire pour permettre le développement d'outils spécifiques. Ce type
 d'outils s'inscrit dans la famille des concordanciers utilisant des
 dictionnaires et des grammaires locales comme
-[Intex]{.sans-serif} / [Nooj]{.sans-serif} ([@MaxSil1993; @MaxSil2005])
-ou [Unitex]{.sans-serif} ([@SebPau2002]).
+[Intex] / [Nooj] ([@MaxSil1993; @MaxSil2005])
+ou [Unitex] ([@SebPau2002]).
 
 ## Architecture
 
@@ -32,7 +32,7 @@ Les ressources peuvent être de différentes natures :
 
 -   format texte tabulé pour certains dictionnaires ;
 
--   description [proteus]{.sans-serif} pour certains dictionnaires ;
+-   description [proteus] pour certains dictionnaires ;
 
 -   XML pour des textes étiquetés ;
 
