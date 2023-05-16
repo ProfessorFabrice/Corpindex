@@ -26,14 +26,6 @@ dictionnaires, index, règles, requêtes). La bibliothèque intègre
 également un mécanisme de greffons permettant de mettre en place une
 chaîne de traitements.
 
-<figure id="FIGCORP1">
-<div class="center">
-
-</div>
-<figcaption>Architecture générale de Corpindex<span id="FIGCORP1"
-label="FIGCORP1"></span></figcaption>
-</figure>
-
 Les ressources peuvent être de différentes natures :
 
 -   texte brut pour des textes en entrée ;
@@ -60,18 +52,7 @@ d'ajouter une dimension structurelle à l'index créé.
 
 Ce principe offre une très bonne performance en ce qui concerne le temps
 de calcul puisque le nombre d'éléments, et donc de clés, à indexer croit
-très rapidement (cf. figure [2](#TOK2){reference-type="ref"
-reference="TOK2"}).
-
-<figure id="TOK2">
-<div class="center">
-<p><img src="Images/nres-cat.png" style="width:6.5cm" alt="image" />
-<img src="Images/nres-formelemme.png" style="width:6.5cm"
-alt="image" /></p>
-</div>
-<figcaption>Progression du nombre de clefs dans la table de hachage<span
-id="TOK2" label="TOK2"></span></figcaption>
-</figure>
+très rapidement 
 
 ## Requête
 
