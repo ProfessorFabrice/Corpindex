@@ -76,7 +76,7 @@ class Dico(object):
 					#treatment of the first line of the dictionary file
 					tags = line[1:].rstrip().split("\t")
 					inflPos = tags.index('f')
-					tags.remove('f')			
+					tags.remove('f')
 				elif not line.startswith('#'):
 					infos = line.rstrip().split("\t")
 					#infos = [x.encode() for x in line.rstrip().split("\t")]					
@@ -95,7 +95,7 @@ class Dico(object):
 					dictCheck[inflForm] = 1
 					self.dictSw[inflForm] = pickle.dumps(tmpDict)
 		except Exception as e:
-			sys.stderr.write(str(e))
+			sys.stderr.write("\n"+str(e)+"\n"+line+"\n")
 			sys.stderr.write('error: reading of a simple words dictionary file')
 			raise
 			exit

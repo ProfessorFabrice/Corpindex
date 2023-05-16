@@ -18,12 +18,13 @@ class Concordance(object):
 	'''
 	Stockage d'une concordance 
 	'''
-	def __init__(self,pl,pv,pr,div,offset):
+	def __init__(self,pl,pv,pr,div,offset,fin=None):
 		self.__pl = pl
 		self.__pv = pv
 		self.__pr = pr
 		self.__div = [x.decode('utf8') if isinstance(x,bytes) else x for x in div]
 		self.__offset = offset
+		self.__fin = fin
 	
 	def getLeft(self):
 		return self.__pl
@@ -52,10 +53,13 @@ class Concordance(object):
 	def getPivotCqpl(self,att="f"):
 		return '['+att+'="'+('"]['+att+'="').join([x.getFeat(att) for x in self.__pv])+'"]'
 
-
 	def getDiv(self):
-		return self.__div
-		
+		return self.__div+[self.__pv[0].getForme()]
+	
+	# on garde pour le moment mais à supprimer
 	def getOffset(self):
 		return self.__offset
+
+	def getOffsets(self):
+		return [self.__offset,self.__fin]
 

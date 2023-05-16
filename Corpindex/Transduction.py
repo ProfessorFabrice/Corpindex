@@ -174,6 +174,7 @@ class Transduction(object):
 					tableTrans[elt[1]] += 1
 				else:
 					tableTrans[elt[1]] = 0
+				#print("tablTrans=",elt[1],tableTrans)
 				pos = tableTrans[elt[1]]
 				#print("mod=",mod,pos) ############
 				for et in mod[pos]:
@@ -207,12 +208,12 @@ class Transduction(object):
 		if "#" in valeur:
 			for var in ti:
 				valeur = re.sub("#"+var,ti[var],valeur)
+		#print(valeur)
+		try: #on tente d'évaluer la transformation comme si c'était du python
+			nouvelleValeur = eval(valeur)
+		except (NameError,SyntaxError) as e: # si eval échoue
+			#print(e)
 			nouvelleValeur = valeur
-		else:
-			try: #on tente d'évaluer la transformation comme si c'était du python
-				nouvelleValeur = eval(valeur)
-			except (NameError,SyntaxError): # si eval échoue 
-				nouvelleValeur = valeur
 		return nouvelleValeur
 
 	# effectue la transformation
@@ -226,7 +227,8 @@ class Transduction(object):
 		else:
 			for trait in modification:
 				if trait != "otag" and trait != "ctag":
-					if "$" not in modification[trait]: #si ce n'est pas de la mémorisation	
+					#print("modif=",modification[trait])
+					if "$" not in modification[trait][0]: #si ce n'est pas de la mémorisation	
 						if trait[0] == "f": # si une modification porte sur la forme
 								token.setForme(self.calculValeur(modification[trait],ti))
 						else: # si pas 'f'
@@ -512,7 +514,7 @@ class Transduction(object):
 		#tabTok = [x.getLowStruct() for x in tabTok] # transformation temporaire
 		#print("tabtok=",[x.getLowStruct() for x in tabTok]) ###
 		res = tabTok # table de règles vide
-		longueurTab = len(tabTok)
+		#longueurTab = len(tabTok)
 		#print("tabTok="+str(len(tabTok))) ####
 		#print("element tabtok"+str(tabTok)) ###
 		#print("table transition=",self.getTableTransition())

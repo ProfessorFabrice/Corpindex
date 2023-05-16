@@ -15,7 +15,7 @@ from Cqpl import Cqpl
 class Cquery(object):
 	def __init__(self):
 		self.verbose = False
-		self.dbMode = "dbm"
+		self.dbMode = "bsd"
 		self.featureList = ['f', 'l', 'c']
 		self.dicts = []
 		self.dictc = []
@@ -45,7 +45,7 @@ class Cquery(object):
 	#   filename : filename path
 	#   mode : "f" (force create), "c" (create if note exist) (default)
 
-	def open(self,filename,mode="c"):
+	def open(self,filename,mode="c",ldict=None):
 		if not os.path.isfile(filename):
 			sys.stderr.write(filename+" : file doesn't exist\n")
 			exit(0)
@@ -56,7 +56,7 @@ class Cquery(object):
 				idx.initDB()
 				idx.initFicDocument()
 				idx.createBase(self.featureList)
-				idx.initTokenizer('txt',self.dicts,'dico',self.dictc)
+				idx.initTokenizer('txt',self.dicts,'dico',self.dictc,ldict=ldict)
 				idx.indexTexte(self.trans)
 				idx.sauveBase()
 				idx.renameFicDocument()
@@ -65,19 +65,30 @@ class Cquery(object):
 			idx.lectureBase()
 		self.defaultIdx = idx
 	
+	# create a new directory index
+	#   filename : filename path
+	def createNewIndex(self,filename):
+		open(filename,"w").close()
+		idx = Index(filename,self.dbMode,self.verbose)
+		idx.initDB()
+		idx.initFicDocument()
+		idx.createBase(self.featureList)
+		return idx
+	
+	# save opened index
+	#   filename : filename path
+	def saveNewIndex(self,idx):
+		idx.sauveBase()
+		idx.renameFicDocument()
+		idx.closeBase()
+		idx.createMeta()
+
+		
+	
 	# apply transduction rules on the index
 	#	transTabFiles : a list of rules files
 		
 	def reindex(self,transTabFiles):
-		#trans = Transduction()
-		#for rf in transTabFiles:
-		#	if os.path.isfile(rf):
-		#		for r in open(rf):
-		#			if r[0] != "#":
-		#				r = r.rstrip()
-		#				if self.verbose:
-		#					sys.stderr.write('add rule : '+r+'\n')
-		#				trans.addRules(r)
 		self.setTransduction(transTabFiles)
 		nidx = Index(self.filename,self.dbMode,self.verbose)
 		nidx.initFicDocument()
@@ -210,13 +221,29 @@ class Cquery(object):
 	#    div : division (string)
 	#  return
 	#    a couple [initial offset,final offset]
+	def getAllOffsetsFromDiv(self,div):
+		return self.defaultIdx.getPosDiv(div)
+
+	# return offsets span from a regexp divison
+	#    div : division (regexp)
+	#  return
+	#    a couple [initial offset,final offset]
+	def getAllOffsetsFromDivRegexp(self,div):
+		return cq.getPosDivRegExp(div)
+
+
+	#return self.defaultIdx.getPosDivRegExp(div)
+	# return offsets span from a divison
+	#    div : division (string)
+	#  return
+	#    a couple [initial offset,final offset]
 	def getOffsetsFromDiv(self,div):
 		s = self.defaultIdx.getPosDiv(div)
 		if len(s)>0:
 			return (s[0][0],s[0][1])
 		else:
-				return ()
-		#return self.defaultIdx.getPosDivRegExp(div)
+			return ()
+
 		
 	# return a concordance as an array (left,query,right)
 	#	query : a CQPL query

@@ -27,6 +27,7 @@ from Tokenize import Tokenizer,XmlError
 from Concordance import Concordance
 from Tokxml import Tokxml
 from Dico import Dico
+from Node import Node
 
 class Index(object):
 	'The index class processes the indexation of the tokens in a corpus'
@@ -60,6 +61,7 @@ class Index(object):
 		self.indexElement = {}
 		self.indexPosElement = None
 		self.numElement = 0
+		self.treeDiv = None
 		self.zone = {} # fiouuu c'est vieux ça... !
 		self.divBD = None
 		self.carrousel = "-\|/" # pour faire une "étoile qui tourne"
@@ -84,11 +86,12 @@ class Index(object):
 		return self.fileName
 		
 	# initialisation du tokenizer
-	def initTokenizer(self,type,listeD,typeD='dico',listeMc=[],lang="df"):
+	def initTokenizer(self,type,listeD,typeD='dico',listeMc=[],lang="df",ldict=None):
 		if type == "txt":
 			Tokenizer.langue = lang
-			self.tokenizer = Tokenizer(listeD,typeD,listeMc,self.verbose)
+			self.tokenizer = Tokenizer(listeD,typeD,listeMc,self.verbose,ldict)
 			self.tokenizer.readMs()
+			#print("dico=",self.tokenizer.dicoMs.get("lit"))
 			self.ficlog.write("end init sw\n")
 			self.tokenizer.readMc()
 			self.ficlog.write("end init cw\n")
@@ -144,17 +147,12 @@ Otherwise, a "fileName_idx" directory is created."""
 	# sauvegarde de l'indexation
 	def updateDB(self):
 		lstEtiq = {'f':1}
-		#print(self.tagList) ######
 		for e in self.tagList:
 			self.tagIndex[e] = list(self.globalIndex[e].keys())
 			lstEtiq[e] = 1
 		self.tagIndex["f"] = list(self.globalIndex["f"].keys())
 		for e in lstEtiq:
-			#print(self.globalIndex.keys()) ##################
 			for v in self.tagIndex[e]:
-				#self.ficlog.write(str(e)+' '+str(v)+'                          '+chr(13))
-				#self.ficlog.write(str(e)+' '+str(v)+'\n')
-				#print (self.globalIndexDB[e].keys())
 				try:
 					tmpvar = self.globalIndexDB[e][v]
 					if tmpvar != None:
@@ -170,7 +168,6 @@ Otherwise, a "fileName_idx" directory is created."""
 				except:
 					sys.stderr.write(len(nouv))
 					raise
-				#print(e,v)
 				try:
 					self.globalIndexDB[e][v] = p
 				except KeyError:
@@ -213,15 +210,6 @@ Otherwise, a "fileName_idx" directory is created."""
 						if val not in self.globalIndex[etiquette]:
 							self.globalIndex[etiquette][val] = []
 						self.globalIndex[etiquette][val].append(cptMot)
-						#try:
-						#	self.globalIndex[etiquette][val].append(cptMot)
-						#except KeyError:
-						#	try:
-						#		self.globalIndex[etiquette][val] = [cptMot]
-						#	except KeyError:
-						#		self.globalIndex[etiquette] = {}
-						#		self.globalIndex[etiquette][val] = [cptMot]
-						#		self.tagList.append(etiquette)
 			else: # division
 				#Debug.debug(cptMot,str(tokv.getLowStruct()))
 				forme = tokv.getDiv()
@@ -244,7 +232,7 @@ Otherwise, a "fileName_idx" directory is created."""
 		return cptMot
 		
 	# indexation
-	def indexTexte(self,trans=None,filtre=False):
+	def indexTexte(self,trans=None,filtre=False,preproc=False):
 		ptrfic = open(self.fileName,encoding='utf-8')
 		cptMot = 0
 		nbLigne = 0
@@ -260,7 +248,7 @@ Otherwise, a "fileName_idx" directory is created."""
 			if ligne == "":
 				break;
 			# call tokeniser
-			self.tokenizer.init(ligne)
+			self.tokenizer.init(ligne,preproc)
 			try:
 				res = self.tokenizer.calcTokens()
 			except XmlError as msg:
@@ -374,16 +362,18 @@ Otherwise, a "fileName_idx" directory is created."""
 	def indexTokenTrans(self,idx,trans):
 		cptMot = 0
 		tagList = idx.getTagLists()
-		for tabTokv in idx.getTokens():
-			#for toktok in tabTokv:
-				#print("avant="+str(toktok))###
-			res = trans.checkTabToken(tabTokv)
-			#print(res) ###
-			cptMot = self.indexation(res,cptMot)
-			res = None
-			if self.verbose:
-				#self.ficlog.write(str(cptMot)+'                       '+chr(13))
-				self.ficlog.write(self.carrousel[cptMot%4]+chr(13))
+		tabTok = []
+		cpt = 0
+		cptMot = 0
+		for tok in idx.getIndexTokens():
+			cpt  += 1
+			tabTok.append(tok)
+			if cpt % 1000 == 0:
+				res = trans.checkTabToken(tabTok)
+				cptMot = self.indexation(res,cptMot)
+				tabTok = []
+		res = trans.checkTabToken(tabTok)
+		cptMot = self.indexation(res,cptMot)
 		cptMot = self.indexation([Token(['SENT',[{'l':'SENT','c':'SENT'}]])],cptMot)
 		self.maxMot = cptMot
 		for e in self.tagList:
@@ -392,20 +382,20 @@ Otherwise, a "fileName_idx" directory is created."""
 		
 	# creation d'un index d'un tableau de token
 	# par rapport à un index déjà créé
-	def indexToken(self,idx):
-		cptMot = 0
-		tagList = idx.getTagLists()
-		for tabTokv in idx.getTokens():
-			cptMot = self.indexation(tabTokv,cptMot)
-			res = None
-			if self.verbose:
-				#self.ficlog.write(str(cptMot)+'                       '+chr(13))
-				self.ficlog.write(self.carrousel[cptMot%4]+chr(13))
-		cptMot = self.indexation([Token(['SENT',[{'l':'SENT','c':'SENT'}]])],cptMot)
-		self.maxMot = cptMot
-		for e in self.tagList:
-			self.tagIndex[e] = list(self.globalIndex[e].keys())
-		self.tagIndex["f"] = list(self.globalIndex["f"].keys())
+	#def indexToken(self,idx):
+	#	cptMot = 0
+	#	tagList = idx.getTagLists()
+	#	for tabTokv in idx.getTokens():
+	#		cptMot = self.indexation(tabTokv,cptMot)
+	#		res = None
+	#		if self.verbose:
+	#			#self.ficlog.write(str(cptMot)+'                       '+chr(13))
+	#			self.ficlog.write(self.carrousel[cptMot%4]+chr(13))
+	#	cptMot = self.indexation([Token(['SENT',[{'l':'SENT','c':'SENT'}]])],cptMot)
+	#	self.maxMot = cptMot
+	#	for e in self.tagList:
+	#		self.tagIndex[e] = list(self.globalIndex[e].keys())
+	#	self.tagIndex["f"] = list(self.globalIndex["f"].keys())
 		
 	# creation d'un index d'un tableau de token
 	# par rapport à un index déjà créé et des dictionnaires (sous forme d'un tableau)
@@ -472,26 +462,28 @@ Otherwise, a "fileName_idx" directory is created."""
 				self.ficlog.write("init "+e+"\n")
 			clef = open(self.dirName+'/'+self.nomRes+'.'+e+'_k','rb')
 			self.globalIndex[e] = pickle.loads(clef.read())
+		self.lectureDivs()
+		
+	def lectureDivs(self):
+		self.treeDiv = Node(['_top',1,self.maxMot])
 		self.indexDiv = self.stock.Stock()
 		self.indexDiv.open(self.dirName+'/'+self.nomRes+'_div')
-		#print(self.dirName+'/'+self.nomRes+'_div')
-		#print("indexDiv=",list(self.indexDiv.keys()),self.indexDiv)
 		for div in list(self.indexDiv.keys()):
 			if isinstance(div,bytes):
 				div = div.decode('utf8')
 			tabDiv = pickle.loads(self.indexDiv[div])
-			#print("div=",div,tabDiv)###
 			for deb in tabDiv:
 				if deb not in self.indexDivDebFin:
 					self.indexDivDebFin[deb] = {}
 				for fin in tabDiv[deb]:
 					if fin not in self.indexDivDebFin[deb]:
 						self.indexDivDebFin[deb][fin] = []
-					self.indexDivDebFin[deb][fin].append(div)
-					#print("indexDivDebFin=",self.indexDivDebFin)
-		self.lstDivDebSort = list(self.indexDivDebFin.keys())
-		self.lstDivDebSort.sort()
-		#print(self.lstDivDebSort)
+					self.indexDivDebFin[deb][fin].insert(0,div)
+					self.treeDiv.insert([div,deb,fin])
+					#print([div,deb,fin])
+		self.lstDivDebSort = sorted(list(self.indexDivDebFin.keys()))
+		self.lstDivDebSort.append(self.maxMot) # sentinelle
+		
 	
 	def close(self):
 		if (self.verbose):
@@ -502,6 +494,31 @@ Otherwise, a "fileName_idx" directory is created."""
 		self.indexPosElement.close()
 		self.indexBD.close()
 		self.indexDiv.close()
+		
+	# ajoute de nouvelles division dans l'index (attention l'index n'est pas rechargé)
+	# pas hyper efficace mais bon ça ira (on pourrait éviter les pickle en rafale)
+	# divs : un tableau de la forme [offstart,offend,tag]
+	def addDiv(self,divs):
+		self.indexDiv = self.stock.Stock()
+		self.indexDiv.open(self.dirName+'/'+self.nomRes+'_div','w')
+		lstdivs = {x for x in self.indexDiv.keys()}
+		tmpDivs = {}
+		for d in divs:
+			[s,e,t] = d 
+			e += 1 # pour correctement fermer la balise il fautindiquer le token suivant
+			if t not in lstdivs:
+				tmpDivs[t] = {s:[e]}
+				lstdivs.add(t)
+			else:
+				if t not in tmpDivs:
+					tmpDivs[t] = pickle.loads(self.indexDiv[t])
+				if s not in tmpDivs[t]:
+					tmpDivs[t][s] = []
+				tmpDivs[t][s].append(e)
+		for t in tmpDivs:
+			self.indexDiv[t] = pickle.dumps(tmpDivs[t])
+		self.indexDiv.close()
+		self.lectureDivs()
 		
 	# ajoute element dans la structure ??
 	def ajouteIndex(self,etiquette,valeur,pos):
@@ -532,46 +549,9 @@ Otherwise, a "fileName_idx" directory is created."""
 	
 	# retourne les divisions à la position pos
 	# sous forme d'un triplet [div,deb,fin]
-	# PB : ne marche pas bien !!!!!! 
 	def getDivPos(self,pos):
-		res = [["_",0,0]]
-		maxi = len(self.lstDivDebSort) - 1
-		fin = maxi
-		#print(self.lstDivDebSort)
-		if fin > 0:
-			if not pos in self.lstDivDebSort:	
-				deb = 1
-				m = deb
-				termine = False
-				while not termine:
-					m = (deb + fin) // 2 
-					if pos > self.lstDivDebSort[m]:
-						deb = m 
-					else:
-						fin = m 
-					if fin - deb <= 1:
-						termine = True
-				#print(deb,fin,"__",self.lstDivDebSort[deb],self.lstDivDebSort[fin],pos)
-				if self.lstDivDebSort[deb]>pos:
-					respos = -1
-				elif self.lstDivDebSort[deb] == pos:
-					respos = self.lstDivDebSort[deb]
-				else:
-					respos = self.lstDivDebSort[fin]
-				respos = [self.lstDivDebSort[deb],self.lstDivDebSort[fin]]
-			else:
-				respos = [pos]
-			if len(respos) >0:
-				for off in respos:
-					for elt in self.indexDivDebFin[off]:
-						empan = [off,elt]
-						if pos>=empan[0] and pos<=empan[1]:
-							res = [[self.indexDivDebFin[off][elt][-1],off,elt]]+res # "id" le pus proche
-			else:
-				res = [["_",0,0]]
-		#print("res=",res)
-		return res
-	
+		return self.treeDiv.getDivPos(pos)				
+		
 	# retourne les position de la division 'div'
 	# sous forme d'un tableau de couples debut,fin	
 	# NE SEMBLE PAS MARCHER (problème encodage avec bsddb3)
@@ -605,7 +585,7 @@ Otherwise, a "fileName_idx" directory is created."""
 						for fin in tabDiv[debut]:
 							res.append([debut,fin])
 				except:
-					#raise
+					raise
 					pass			
 		return res
 		
@@ -673,7 +653,7 @@ Otherwise, a "fileName_idx" directory is created."""
 		meta = open(self.dirName+'/'+self.nomRes+"_meta.xml","w",encoding='utf-8')
 		meta.write("<meta>\n")
 		meta.write("\t<list>\n")
-		meta.write("\t\t<item k='tag' v='f:"+":".join(self.tagList)+"'>")
+		meta.write("\t\t<item k='tag' v='f:"+":".join(self.tagList)+"'>\n")
 		meta.write("\t</list>\n")
 		meta.write("</meta>\n")
 		meta.close()
@@ -714,7 +694,8 @@ Otherwise, a "fileName_idx" directory is created."""
 		#print(res) ####
 		try:
 			divPos = self.getDivPos(debut)
-		except IndexError: 
+		except IndexError:
+			#raise
 			divPos = []
 		return [pg,res,pd,divPos]
 		
@@ -734,32 +715,14 @@ Otherwise, a "fileName_idx" directory is created."""
 			pr.append(Token(self.getElement(i)))
 		try:
 			divPos = self.getDivPos(debut)
-		except IndexError: 
+		except (IndexError,KeyError): 
+			raise
 			divPos = [""]
-		return Concordance(pl,pv,pr,divPos,debut)
+		return Concordance(pl,pv,pr,divPos,debut,fin)
 	
 	# retourne le nombre de mots du document
 	def getMaxMot(self):
 		return self.maxMot
-	
-	# retourne 
-	def getTabResultats(self,tabres,taille,nb,zone=[]):
-		"""
-	tabres : tableau de résultats
-	taille : taille du contexte
-	nb : nombre de concordance
-		"""
-		res = []
-		resort = list(tabres.keys())
-		resort.sort()
-		if nb !=-1:
-			resort = resort[:nb]
-		for rk in resort:
-			#print(rk)####
-			if rk<self.maxMot:
-				yield self.getResultat(tabres[rk],rk,taille,zone)
-#			res.append(self.getResultat(tabres[rk],rk,taille))
-#		return res
 		
 	# retourne 
 	def getTabConc(self,tabres,taille,nb):
@@ -813,29 +776,18 @@ Otherwise, a "fileName_idx" directory is created."""
 		offset = 1
 		pileFin = [-1] # sentinelle
 		while offset < self.getMaxMot():
-			#print(offset,self.indexDivDebFin)
 			if offset in self.indexDivDebFin: # si balise ouvrant ici
-				#print(sorted(self.indexDivDebFin[offset].keys(), reverse=True))
 				for fin in sorted(self.indexDivDebFin[offset].keys(), reverse=True):
 					for div in self.indexDivDebFin[offset][fin]:
 						yield Token([[div]]) # balise ouvrante
-						#yield Token([self.indexDivDebFin[offset][fin]]) # balise ouvrante
 						pileFin.append(fin)
 			tok = self.getElement(offset)
 			offset += 1
 			yield Token(tok) # token
-			#print("------->",offset,pileFin[-1])
-			#while offset == pileFin[-1]:
 			while offset >= pileFin[-1] and pileFin[-1] != -1:  # c'est moche
 				del pileFin[-1]
 				yield Token([['/']])	# balise fermante
-	
-	#def getIndexTokens(self):
-	#	offset = 1
-	#	while offset < self.getMaxMot():
-	#		tok = self.getElement(offset)
-	#		yield Token(tok)
-	#		offset += 1
+
 
 	# associer des zones à un index (old)
 	def putZone(self,zone):

@@ -16,14 +16,6 @@ import os
 
 import bsddb3 as bsddb
 
-#try:
-#	import bsddb3 as bsddb
-#except ImportError:
-#	try:
-#		import bsddb
-#	except ImportError:
-#		sys.stderr.write("pas de prise en charge du module bsddb\n")
-
 class Stock(dict):
 	def __init__(self):
 		self.dico = {}
@@ -35,7 +27,6 @@ class Stock(dict):
 		except:
 			sys.stderr.write("impossible d'ouvrir : "+name+"\n")
 			raise
-		#self.dkeys = dict([(x.decode("utf-8"),'') for x in list(self.dico.keys())])
 			
 		
 	def close(self):

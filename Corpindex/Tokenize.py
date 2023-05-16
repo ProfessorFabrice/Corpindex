@@ -28,7 +28,7 @@ class XmlError(Exception):
 
 
 class Tokenizer(object):
-	def __init__(self,dicoMs,typeMs,dicoMc=[],verbose=False):
+	def __init__(self,dicoMs,typeMs,dicoMc=[],verbose=False,ldict=None):
 		self.verbose = verbose
 		self.dico = Dico(self.verbose)
 		self.listeDicoMs = dicoMs
@@ -40,7 +40,10 @@ class Tokenizer(object):
 		self.lexer = lex.lex(object=self,reflags=re.UNICODE)
 		self.dictr = dict((ord(x), y) for (x, y) in zip('ABCDEFGHIJKLMNOPQRSTUVWXYZÂÀÉÈÊËÎÏÔÛÙÇ','abcdefghijklmnopqrstuvwxyzâàéèêëîïôûùç'))
 		self.pileRes = []
-		self.dicoMs = {}
+		if ldict != None:
+			self.dicoMs = ldict
+		else:
+			self.dicoMs = None
 		self.dicoMc = {}
 		self.pileBalise = []
 		
@@ -73,7 +76,7 @@ class Tokenizer(object):
 	matchmot = {}
 	langue = 'df' # par defaut
 	#matchmot['df'] = r"[^-<> .!?,;:|({\[)}\]0-9_%'\"\n\t\r+/@»*°=&]+'?" 
-	matchmot['df'] = r"[^-<> .!?,;:…|({\[)}\]_%'’\"\n\t\r+/«»*°=&`“ㆍ‘” ‘’ⓒ~ €£]+[’']?" #' avec espace insécable
+	matchmot['df'] = r"[^-<> .!?,;:…|({\[)}\]_%'’\"\n\t\r+/«»*°=`“ㆍ‘” ‘’ⓒ~ €£]+[’']?" #' avec espace insécable
 	
 
 	
@@ -136,7 +139,8 @@ class Tokenizer(object):
 		return t
 		
 	def t_NUM(self,t):
-		r'[-+]?\d+([\.,]\d+)?'
+		r'[-+]?\d+'
+		#r'[-+]?\d+([\.,]\d+)?'
 		t.value = [t.value,[{'l':'0','c':'0'}]]
 		return t
 				
@@ -161,7 +165,7 @@ class Tokenizer(object):
 		return t
 		
 	def t_SYM(self,t):
-		r"[%\+*/&]"
+		r"[%\+*/&|=@$]"
 		t.value = [t.value,[{'l':t.value,'c':'Fy'}]]
 		return t
 		
@@ -194,8 +198,14 @@ class Tokenizer(object):
 		t.lexer.skip(1)
 		
 	# entree de la chaine a analyser
-	def init(self,texte):
+	def init(self,texte,preproc=None):
 		#self.lexer.input(texte.lower())
+		if preproc:
+			for elt in preproc:
+				[regexp,motif] = elt
+				#if re.search(regexp,texte):
+				#	print(texte)
+				texte = re.sub(regexp,motif,texte)
 		self.lexer.input(texte)
 		self.texte = texte
 	
@@ -282,9 +292,10 @@ class Tokenizer(object):
 		return forme
 		
 	# lecture du dictionnaire des mots simples
-	def readMs(self):
-		self.dicoMs = Dico()
-		self.dicoMs.load(self.listeDicoMs,self.typeMs)
+	def readMs(self,force=False):
+		if self.dicoMs == None or force:
+			self.dicoMs = Dico()
+			self.dicoMs.load(self.listeDicoMs,self.typeMs)
 				
 	# lecture du dictionnaire des mots composés
 	def readMc(self):

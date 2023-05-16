@@ -199,6 +199,7 @@ class RequeteIndex(object):
 		else:
 			tabPos = self.index.getPosDiv(div)
 		res = {}
+		#print("tabPos=",tabPos)
 		for elt in dico[1]:
 			deb=dico[1][elt]
 			fin = elt

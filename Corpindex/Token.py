@@ -80,9 +80,14 @@ class Token(object):
 	def setFeatVal(self,d):
 		self.__tok[1].append(d)
 
-	# ajoute un attribut à u groupe
+	# ajoute un attribut à un groupe
 	def setAttValFeat(self,num,att,val):
 		self.__tok[1][num][att] = val
+			
+	# ajoute un attribut à tous les groupes
+	def setAttValAllFeat(self,att,val):
+		for i in range(0,len(self.__tok[1])):
+			self.__tok[1][i][att] = val
 			
 	def getJson(self):
 		return json.dumps(self.__tok)

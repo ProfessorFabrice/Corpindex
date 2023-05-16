@@ -83,6 +83,7 @@ class Cqpl(object):
 		except Exception as msg:
 			self.arbre = []
 			sys.stderr.write(str(msg)+"\n")
+			raise
 		#self.yacc.parse(self.requete,lexer = self.lex)
 		return self.arbre
 
@@ -322,13 +323,14 @@ if __name__ == '__main__':
 	#exp = '[f~"^(Francilien|Européen|Français|Allemand|Canadien)s?$"#1][*][c~"^V"#2]'
 	#exp = '[a="a"]([b="b"/a="c"]?[c="c"/a="b"]|[d="d"]?)?[e="e"]'
 	#exp = '[a="aaa"][b="bbbsdfsd"][c=s"ccc]dfdfdfbdf'
-	exp = '[f="["][l~"^[^[]"/*]{0,20}[f="]"]'
+	#exp = '[f="["][l~"^[^[]"/*]{0,20}[f="]"]'
+	exp = '[c="."][f="}"] within "frac"[c="."]'
 	print(c.preProcQuery(exp))
-	#c.putRequete(exp)
+	c.putRequete(exp)
 	#msg=""
-	#res = c.creationArbre()
-	#if len(res) > 0:
-	#	print(res)
-	#	print(c.affiche(0,res))
+	res = c.creationArbre()
+	if len(res) > 0:
+		print(res)
+		print(c.affiche(0,res))
  	 
  
