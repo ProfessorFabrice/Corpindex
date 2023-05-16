@@ -16,7 +16,6 @@ parser.add_argument("-w", "--word", help="recherche de la forme", action="store_
 parser.add_argument("-c", "--calc", help="uniquement calcul de la taille du résultat", action="store_true",default=False)
 parser.add_argument("-o", "--output", help="type de sortie",default="txt",choices=['txt','csv','xml','txtmax',"term","dist","pivot","fige","offset"])
 parser.add_argument("-r", "--range", help="taille du contexte",default=5,type=int)
-#parser.add_argument("-f", "--feature", help="nature du trait",choices=['f','l','c','r'],default=['f'], nargs='+')
 parser.add_argument("-f", "--feature", help="nature du trait",choices=['f','l','c','r','t','p','s','z'],default='f')
 parser.add_argument("-pt", "--typepost", help="nature du post traitement",choices=['out','proc','procout'],default='out')
 parser.add_argument("-pp", "--postparam", help="paramètres supplémentaires pour le post traitement", type=str, nargs='+')
@@ -53,6 +52,7 @@ lstparam = args["postparam"]
 req = Requete()
 restotal = []
 nbrestotal = 0
+
 try:
 	for f in index:
 		if verb:
@@ -73,6 +73,7 @@ try:
 					sys.stderr.write("Requête "+str(nbq)+": "+q+" ("+vq+")\n")
 				res = req.calculRequete()
 				nbrestotal += len(res)
+				q = q.rstrip()
 				if verb:
 					sys.stderr.write('resultat : '+str(len(res))+'\n')
 				restotal.append([idx,res,q])

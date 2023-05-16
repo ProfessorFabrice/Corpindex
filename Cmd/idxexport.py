@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser(description="interrogation d'un index")
 parser.add_argument("-v", "--verbose", help="active affichage informations",action="store_true",default=False)
 parser.add_argument("-n", "--nosep", help="résultat sur une seule ligne",action="store_true",default=False)
 parser.add_argument("-d", "--div", help="affichage des div",action="store_true",default=False)
+parser.add_argument("-p", "--pos", help="affichage position offset",action="store_true",default=False)
 parser.add_argument("-l", "--level", help="ne retient que les traits avec le level le plus élevé",action="store_true",default=False)
 parser.add_argument("-o", "--output", help="type de sortie",default="txt",choices=['txt','xml','json','dico','brut','txtsep'])
 parser.add_argument('-i', "--index", type=str, nargs='+', help='fichiers index')
@@ -31,6 +32,7 @@ nosep = args["nosep"]
 feature = args["feature"]
 divAff = args["div"]
 level = args["level"]
+posOff = args["pos"]
 tabul = '\t'
 nl = '\n'
 if nosep:
@@ -67,28 +69,43 @@ for elt in index:
 	idx.lectureBase()
 	op = ""
 	div = ""
+	acc = 0
+	saut = True
 	if output == "xml":
 		print("<text>",end=nl)
 		if ident != "":
 			print('<div id="'+ident+'">',end=nl)
 	elif output == "json":
 		print("[")
+	offset = 0
 	for tok in idx.getIndexTokens():
+		if not tok.isDiv():
+			offset += 1
 		#print(tok.getLowStruct())
 		if level and not tok.isDiv():
 			tok = getMaxLevel(tok)
 		if output == "json":
 			print(tok.getJson(),",",end=nl)
 		elif output[:3] == "txt":
-			if tok.isDiv() and divAff:
-				div = tok.getDiv()
-				if div == "/":
-					op += "</div>\n"
-				else:
-					op += '<div id=\"'+tok.getDiv()+'">\n'
+			if tok.isDiv():
+				if divAff:
+					div = tok.getDiv()
+					if div == "/":
+						op += "</div>\n"
+					else:
+						op += '<div id=\"'+tok.getDiv()+'">\n'
 			else:
-				op += tok.getFeat(feature[0])+" "
-			if tok.getFeat("f") in [".",";","?","!"]:
+				t = tok.getFeat(feature[0])
+				if t =="{":
+					acc += 1
+				elif t == "}":
+					acc -= 1
+				if t[0] == "\\":
+					saut = False
+				else:
+					saut = True 
+				op += t+" "
+			if len(op)>80 and acc == 0 and saut: # saut de ligne
 				if len(output)==3:
 					op = re.sub(" ([,.])","\\1",op)
 					op = re.sub("(') ","\\1",op)
@@ -109,12 +126,11 @@ for elt in index:
 					print(tabul*2+"<item ",end="")
 					print(" ".join([att+'="'+tok.getFeat(att,i)+'"' if tok.getFeat(att,i)!='"' else att+"=\"''\"" for att in tok.getLstFeat(i)]),end="")
 					print("/>",end=nl)
-				print(tabul+"</infos>"+nl+tabul+"<w>"+tok.getForme()+"</w>",end=nl)
+				print(tabul+"</infos>"+nl+tabul+"<w o=\""+str(offset)+"\">"+tok.getForme()+"</w>",end=nl)
 				print("</tok>",end=nl)
 		elif output == "dico":
 			if tok.isDiv() and divAff:
 				div = tok.getDiv()
-				print("---------->",div)
 				if div == "/":
 					divs.pop()
 				else:
@@ -122,14 +138,20 @@ for elt in index:
 			else:
 				if divAff:
 					print(":".join(divs)+"\t",end="")
+				if posOff:
+					print(str(offset)+"\t",end="")
 				print("\t".join([tok.getFeat(x) for x in feature]))
 				#print(div+"\t".join([tok.getFeat(x) for x in tok.getLstFeat()]))
 				#print(div+"\t".join([tok.getFeat("f"),tok.getFeat("l"),tok.getFeat("c")]))
 		else:
 			tokenBrut = tok.getLowStruct()
 			if len(tokenBrut)>1:
+				if posOff:
+					print(str(offset)+"\t",end="")
 				print(len(tokenBrut[1]),tokenBrut)
 			else:
+				if posOff:
+					print("\t",end="")
 				print(0,tokenBrut)
 	if output == "xml":
 		if ident != "":

@@ -81,18 +81,18 @@ for elt in dicoC:
 	pm2 = dicoM[m2]/total
 	pm1m2 = dicoC[elt]/total
 	if dicoM[m1]>=minfreq and dicoM[m2]>=minfreq and dicoC[elt]>=minfreq:
-		affiche = [math.log(pm1m2/(pm1*pm2)),m1,m2,dicoM[m1],dicoM[m2],dicoC[elt],math.log(pm1m2/(pm1*pm2))*dicoC[elt]]
+		affiche = [math.log(pm1m2/(pm1*pm2)),dicoC[elt],m1,m2,math.log(pm1m2/(pm1*pm2))*dicoC[elt]]
 		resultat.append(affiche)
 
-resultat = sorted(resultat,key= lambda x:x[6],reverse=True)
+resultat = sorted(resultat,key= lambda x:x[4],reverse=True)
 sortie = []
-prec = resultat[0][6]+stop*2
+prec = resultat[0][4]+stop*2
 cpt = 0
 for elt in resultat:
-	if prec-elt[6]>stop or prec == elt[6]:
+	if prec-elt[4]>stop or prec == elt[4]:
 		cpt += 1
 		sortie.append("\t".join([str(x) for x in elt]))
-		prec = elt[6]
+		prec = elt[4]
 	else:
 		break
 print(cpt)

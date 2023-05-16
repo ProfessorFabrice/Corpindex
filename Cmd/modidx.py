@@ -10,9 +10,10 @@ import os
 parser = argparse.ArgumentParser(description="modification de l'index")
 parser.add_argument("-v", "--verbose", help="active affichage informations",action="store_true",default=False)
 parser.add_argument("-db", "--database", help="type de bdd",default='bsd',choices=['bsd','dbm','dpy'])
-parser.add_argument("-lf", "--listfeature", help="liste de traits",default=['f','l','c'],type=str, nargs='+',choices=['f','l','c','r','p','d','s'])
+parser.add_argument("-lf", "--listfeature", help="liste de traits",default=['f','l','c'],type=str, nargs='+',choices=['f','l','c','r','p','d','s','m'])
 parser.add_argument("-l", "--log", help="fichier de log",default="stderr",type=str)
 parser.add_argument('-i', "--input", type=str, nargs='+',help='fichiers à index',required=True)
+parser.add_argument('-o', "--output", type=str,help='nom de la copie',required=True)
 parser.add_argument('-r', "--rules", type=str, nargs='+',help='fichiers de règles de transduction',required=True)
 args = parser.parse_args()
 args = vars(args)
@@ -29,10 +30,11 @@ from Index import Index
 
 verb = args['verbose']
 input = args['input']
-database = args['database']
+output = args['output']
 rules = args['rules'] 
 listfeature = args['listfeature']
 log = args["log"]
+database = args['database']
 
 if log == "stderr":
 	ficlog = sys.stderr
@@ -62,7 +64,8 @@ for file in input:
 		ficlog.write(file+'\n')
 	idx = Index(file,"",verb,ficlog)
 	idx.lectureBase()
-	nidx = Index(file,database,verb)
+	nidx = Index(output,database,verb,ficlog)
+	nidx.initDB()
 	nidx.initFicDocument()
 	nidx.createBase(listfeature)
 	nidx.indexTokenTrans(idx,trans)
