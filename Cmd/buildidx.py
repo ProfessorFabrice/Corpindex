@@ -16,6 +16,7 @@ parser.add_argument("-l", "--log", help="fichier de log",default="stderr",type=s
 parser.add_argument("-d", "--dicts", type=str, nargs='+',help="dictionaries simple words",default=[],required=False)
 parser.add_argument("-dc", "--dictc", type=str, nargs='+',help="dictionaries compound words",default=[],required=False)
 parser.add_argument('-i', "--input", type=str, nargs='+',help='fichiers à index',required=True)
+parser.add_argument('-p', "--preproc", type=str,help='fichiers contenant des règles (substitution)',default=None)
 parser.add_argument('-f', "--filtre", help='filtre sur "level"',action="store_true",default=False)
 parser.add_argument('-r', "--rules", type=str, nargs='+',help='fichiers de règles de transduction')
 args = parser.parse_args()
@@ -43,6 +44,10 @@ rules = args['rules']
 filtre = args['filtre'] 
 listfeature = args['listfeature']
 log = args["log"]
+if args["preproc"] != None:
+	preproc = [x.rstrip().split("\t") for x in open(args["preproc"])]
+else:
+	preproc = None
 
 if dicts==None and not xml:
 	parser.print_help()
@@ -84,7 +89,7 @@ for file in input:
 		idx.initTokenizer('txt',dicts,'dico',dictc)
 	else:
 		idx.initTokenizer('xml','')
-	idx.indexTexte(trans,filtre)
+	idx.indexTexte(trans,filtre=filtre,preproc=preproc)
 	idx.sauveBase()
 	idx.renameFicDocument()
 	idx.closeBase()
