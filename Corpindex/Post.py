@@ -3,8 +3,9 @@
 import re
 import string
 import sys
+import os.path
 
-sys.path.append('Corpindex/greffon')
+sys.path.append(os.path.dirname(os.path.abspath(__file__))+'/greffon')
 
 class Post(object):
 	def __init__(self,conf,tabconc,tabinfo):

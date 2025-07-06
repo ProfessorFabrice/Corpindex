@@ -1,2 +1,6 @@
 dist/
 Corpindex.egg-info/
+Cmd/
+__pycache__/
+.*
+*.pyc
