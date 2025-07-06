@@ -6,6 +6,11 @@ setup(
 	name='Corpindex',
 	version='0.1',
 	packages=find_packages(),
+	install_requires=[
+        "ply",
+        "bsddb3",
+        "intervaltree",  # version libre
+    ],
 	entry_points={
 		'console_scripts': [
 			'buildidx = Corpindex.cli_buildidx:main',
