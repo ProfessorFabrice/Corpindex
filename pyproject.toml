@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Corpindex"
+version = "0.1"
+description = "Bibliothèque Python de manipulation de corpus, d'indexation et d'interrogation"
+authors = [
+  { name="Fabrice Issac", email="fabrice.issac@univ-paris13.fr" }
+]
+readme = "README.md"
+license = { text = "CeCILL-2.1" }
+requires-python = ">=3.7"
+
+dependencies = [
+  "ply",
+  "bsddb3",
+  "intervaltree"
+]
+
+[project.scripts]
+buildidx = "Corpindex.cli_buildidx:main"
+query = "Corpindex.cli_query:main"
+hquery = "Corpindex.cli_hquery:main"
+idxexport = "Corpindex.cli_idxexport:main"
+idxinfo = "Corpindex.cli_idxinfo:main"
+modidx = "Corpindex.cli_modidx:main"
