@@ -70,7 +70,7 @@ class Index(object):
 		self.treeDiv = None
 		self.zone = {} # fiouuu c'est vieux ça... !
 		self.divBD = None
-		self.carrousel = "-\|/" # pour faire une "étoile qui tourne"
+		self.carrousel = "-\|/" # pour faire un carrousel
 		# chargement du bon module en fonction de la nature de la BdD persistante utilisée
 		n = self.getNature()
 		if n != "" and nature == "": # index déjà créé
@@ -127,7 +127,8 @@ Otherwise, a "fileName_idx" directory is created."""
 	# creation des fichiers (index, document) en utilisant des tables de hachage persistantes 
 	# gérées par l'objet "Stock" le jeu d'étiquette est nécessaire sous forme d'un tableau
 	def createBase(self,tags):
-		self.tags = tags
+		#self.tags = tags
+		
 		self.tags.append('level')
 		self.divBD = self.stock.Stock()
 		self.divBD.open(self.dirName+'/'+self.nomRes+'_div','w')
@@ -136,8 +137,6 @@ Otherwise, a "fileName_idx" directory is created."""
 		self.indexBD['___listetiquette___'] = pickle.dumps(tags)
 		self.indexBD['___nombremots___'] = "0"
 		self.globalIndexDB = {}
-		if isinstance(tags,str): # beurk
-			tags = tags.split(":")
 		for e in tags:
 			self.globalIndexDB[e] = self.stock.Stock()
 			self.globalIndexDB[e].open(self.dirName+'/'+self.nomRes+'.'+e,'w')
@@ -179,8 +178,9 @@ Otherwise, a "fileName_idx" directory is created."""
 				try:
 					self.globalIndexDB[e][v] = p
 				except KeyError:
-					print("-->",e,v)
-					raise
+					self.globalIndexDB[e] = self.stock.Stock()
+					self.globalIndexDB[e].open(self.dirName+'/'+self.nomRes+'.'+e,'w')
+					self.globalIndexDB[e][v] = p
 			del self.globalIndex[e]
 			self.globalIndex[e] = {}
 		for e in list(self.globalIndexDB.keys()):
@@ -594,7 +594,7 @@ Otherwise, a "fileName_idx" directory is created."""
 					pass			
 		return res
 		
-	# retourne l'ensemble des divisiosn d'un index
+	# retourne l'ensemble des divisions d'un index
 	# sous forme d'un tableau
 	def getAllDiv(self):
 		return self.indexDiv.keys()

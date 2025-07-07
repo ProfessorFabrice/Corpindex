@@ -224,6 +224,21 @@ options:
                         identifiant
 ```
 
+**Information sur un index**
+
+```bash
+usage: idxinfo [-h] [-v] [-d] [-t] [-i INDEX [INDEX ...]]
+
+informations sur un index
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         active affichage informations
+  -d, --div             liste des id des balises <div>
+  -t, --total           Affiche uniquement le total
+  -i INDEX [INDEX ...], --index INDEX [INDEX ...]
+                        fichiers index
+``` 
 ---
 
 ## Public cible
