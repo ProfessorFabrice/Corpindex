@@ -268,7 +268,7 @@ class Hquery(object):
 
 def main():
 	# parameters
-	parser = argparse.ArgumentParser(description="interrogation d'un index")
+	parser = argparse.ArgumentParser(description="interrogation d'un index avec gestion d'empan")
 	parser.add_argument('-i', "--index", type=str, nargs='+',help='fichiers index')
 	parser.add_argument('-q', "--query", type=str, help='requête (non CQPL)')
 	parser.add_argument("-v", "--verbose", help="active affichage informations",action="store_true",default=False)
