@@ -26,7 +26,7 @@ la construction d'outils spécialisés (concordanciers, moteurs de requêtes, ch
 La bibliothèque peut être installée directement depuis GitHub :
 
 ```bash
-pip install git+https://github.com/ProfessorFabrice/corpindex.git
+pip install git+https://github.com/ProfessorFabrice/corpindex.git@master
 ```
 
 ### Dépendances
