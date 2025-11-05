@@ -1,0 +1,815 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> ensmot
+Rule 1     ensmot -> ensmot WITHIN GROUPE
+Rule 2     ensmot -> ensmot WITHIN NUM
+Rule 3     ensmot -> ensmot ensmot
+Rule 4     ensmot -> ensmot | ensmot
+Rule 5     ensmot -> ( ensmot )
+Rule 6     ensmot -> ( ensmot ) ?
+Rule 7     ensmot -> mot
+Rule 8     mot -> [ motmod ]
+Rule 9     mot -> [ motmod ] ?
+Rule 10    motmod -> defmot
+Rule 11    motmod -> defmot / modif
+Rule 12    motmod -> defmot ZONE NUM
+Rule 13    defmot -> attval
+Rule 14    defmot -> defmot & defmot
+Rule 15    defmot -> defmot | defmot
+Rule 16    defmot -> ( defmot )
+Rule 17    defmot -> ! defmot
+Rule 18    attval -> ATT = VALATT
+Rule 19    attval -> ATT ~ VALATT
+Rule 20    attval -> + attval
+Rule 21    attval -> - attval
+Rule 22    attval -> @ ATT
+Rule 23    attval -> MOT
+Rule 24    modif -> attval
+Rule 25    modif -> modif , attval
+Rule 26    modif -> <empty>
+
+Terminals, with rules where they appear
+
+!                    : 17
+&                    : 14
+(                    : 5 6 16
+)                    : 5 6 16
++                    : 20
+,                    : 25
+-                    : 21
+/                    : 11
+=                    : 18
+?                    : 6 9
+@                    : 22
+ATT                  : 18 19 22
+GROUPE               : 1
+MOT                  : 23
+NUM                  : 2 12
+VALATT               : 18 19
+WITHIN               : 1 2
+ZONE                 : 12
+[                    : 8 9
+]                    : 8 9
+error                : 
+|                    : 4 15
+~                    : 19
+
+Nonterminals, with rules where they appear
+
+attval               : 13 20 21 24 25
+defmot               : 10 11 12 14 14 15 15 16 17
+ensmot               : 1 2 3 3 4 4 5 6 0
+modif                : 11 25
+mot                  : 7
+motmod               : 8 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . ensmot
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    (               shift and go to state 2
+    [               shift and go to state 4
+
+    ensmot                         shift and go to state 1
+    mot                            shift and go to state 3
+
+state 1
+
+    (0) S' -> ensmot .
+    (1) ensmot -> ensmot . WITHIN GROUPE
+    (2) ensmot -> ensmot . WITHIN NUM
+    (3) ensmot -> ensmot . ensmot
+    (4) ensmot -> ensmot . | ensmot
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    WITHIN          shift and go to state 6
+    |               shift and go to state 7
+    (               shift and go to state 2
+    [               shift and go to state 4
+
+    ensmot                         shift and go to state 5
+    mot                            shift and go to state 3
+
+state 2
+
+    (5) ensmot -> ( . ensmot )
+    (6) ensmot -> ( . ensmot ) ?
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    (               shift and go to state 2
+    [               shift and go to state 4
+
+    ensmot                         shift and go to state 8
+    mot                            shift and go to state 3
+
+state 3
+
+    (7) ensmot -> mot .
+
+    WITHIN          reduce using rule 7 (ensmot -> mot .)
+    |               reduce using rule 7 (ensmot -> mot .)
+    (               reduce using rule 7 (ensmot -> mot .)
+    [               reduce using rule 7 (ensmot -> mot .)
+    $end            reduce using rule 7 (ensmot -> mot .)
+    )               reduce using rule 7 (ensmot -> mot .)
+
+
+state 4
+
+    (8) mot -> [ . motmod ]
+    (9) mot -> [ . motmod ] ?
+    (10) motmod -> . defmot
+    (11) motmod -> . defmot / modif
+    (12) motmod -> . defmot ZONE NUM
+    (13) defmot -> . attval
+    (14) defmot -> . defmot & defmot
+    (15) defmot -> . defmot | defmot
+    (16) defmot -> . ( defmot )
+    (17) defmot -> . ! defmot
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    (               shift and go to state 12
+    !               shift and go to state 13
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    motmod                         shift and go to state 9
+    defmot                         shift and go to state 10
+    attval                         shift and go to state 11
+
+state 5
+
+    (3) ensmot -> ensmot ensmot .
+    (1) ensmot -> ensmot . WITHIN GROUPE
+    (2) ensmot -> ensmot . WITHIN NUM
+    (3) ensmot -> ensmot . ensmot
+    (4) ensmot -> ensmot . | ensmot
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    WITHIN          reduce using rule 3 (ensmot -> ensmot ensmot .)
+    (               reduce using rule 3 (ensmot -> ensmot ensmot .)
+    [               reduce using rule 3 (ensmot -> ensmot ensmot .)
+    $end            reduce using rule 3 (ensmot -> ensmot ensmot .)
+    )               reduce using rule 3 (ensmot -> ensmot ensmot .)
+    |               shift and go to state 7
+
+  ! |               [ reduce using rule 3 (ensmot -> ensmot ensmot .) ]
+  ! WITHIN          [ shift and go to state 6 ]
+  ! (               [ shift and go to state 2 ]
+  ! [               [ shift and go to state 4 ]
+
+    ensmot                         shift and go to state 5
+    mot                            shift and go to state 3
+
+state 6
+
+    (1) ensmot -> ensmot WITHIN . GROUPE
+    (2) ensmot -> ensmot WITHIN . NUM
+
+    GROUPE          shift and go to state 19
+    NUM             shift and go to state 20
+
+
+state 7
+
+    (4) ensmot -> ensmot | . ensmot
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    (               shift and go to state 2
+    [               shift and go to state 4
+
+    ensmot                         shift and go to state 21
+    mot                            shift and go to state 3
+
+state 8
+
+    (5) ensmot -> ( ensmot . )
+    (6) ensmot -> ( ensmot . ) ?
+    (1) ensmot -> ensmot . WITHIN GROUPE
+    (2) ensmot -> ensmot . WITHIN NUM
+    (3) ensmot -> ensmot . ensmot
+    (4) ensmot -> ensmot . | ensmot
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    )               shift and go to state 22
+    WITHIN          shift and go to state 6
+    |               shift and go to state 7
+    (               shift and go to state 2
+    [               shift and go to state 4
+
+    ensmot                         shift and go to state 5
+    mot                            shift and go to state 3
+
+state 9
+
+    (8) mot -> [ motmod . ]
+    (9) mot -> [ motmod . ] ?
+
+    ]               shift and go to state 23
+
+
+state 10
+
+    (10) motmod -> defmot .
+    (11) motmod -> defmot . / modif
+    (12) motmod -> defmot . ZONE NUM
+    (14) defmot -> defmot . & defmot
+    (15) defmot -> defmot . | defmot
+
+    ]               reduce using rule 10 (motmod -> defmot .)
+    /               shift and go to state 24
+    ZONE            shift and go to state 25
+    &               shift and go to state 26
+    |               shift and go to state 27
+
+
+state 11
+
+    (13) defmot -> attval .
+
+    /               reduce using rule 13 (defmot -> attval .)
+    ZONE            reduce using rule 13 (defmot -> attval .)
+    &               reduce using rule 13 (defmot -> attval .)
+    |               reduce using rule 13 (defmot -> attval .)
+    ]               reduce using rule 13 (defmot -> attval .)
+    )               reduce using rule 13 (defmot -> attval .)
+
+
+state 12
+
+    (16) defmot -> ( . defmot )
+    (13) defmot -> . attval
+    (14) defmot -> . defmot & defmot
+    (15) defmot -> . defmot | defmot
+    (16) defmot -> . ( defmot )
+    (17) defmot -> . ! defmot
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    (               shift and go to state 12
+    !               shift and go to state 13
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    defmot                         shift and go to state 28
+    attval                         shift and go to state 11
+
+state 13
+
+    (17) defmot -> ! . defmot
+    (13) defmot -> . attval
+    (14) defmot -> . defmot & defmot
+    (15) defmot -> . defmot | defmot
+    (16) defmot -> . ( defmot )
+    (17) defmot -> . ! defmot
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    (               shift and go to state 12
+    !               shift and go to state 13
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    defmot                         shift and go to state 29
+    attval                         shift and go to state 11
+
+state 14
+
+    (18) attval -> ATT . = VALATT
+    (19) attval -> ATT . ~ VALATT
+
+    =               shift and go to state 30
+    ~               shift and go to state 31
+
+
+state 15
+
+    (20) attval -> + . attval
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    attval                         shift and go to state 32
+
+state 16
+
+    (21) attval -> - . attval
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    attval                         shift and go to state 33
+
+state 17
+
+    (22) attval -> @ . ATT
+
+    ATT             shift and go to state 34
+
+
+state 18
+
+    (23) attval -> MOT .
+
+    /               reduce using rule 23 (attval -> MOT .)
+    ZONE            reduce using rule 23 (attval -> MOT .)
+    &               reduce using rule 23 (attval -> MOT .)
+    |               reduce using rule 23 (attval -> MOT .)
+    ]               reduce using rule 23 (attval -> MOT .)
+    )               reduce using rule 23 (attval -> MOT .)
+    ,               reduce using rule 23 (attval -> MOT .)
+
+
+state 19
+
+    (1) ensmot -> ensmot WITHIN GROUPE .
+
+    WITHIN          reduce using rule 1 (ensmot -> ensmot WITHIN GROUPE .)
+    |               reduce using rule 1 (ensmot -> ensmot WITHIN GROUPE .)
+    (               reduce using rule 1 (ensmot -> ensmot WITHIN GROUPE .)
+    [               reduce using rule 1 (ensmot -> ensmot WITHIN GROUPE .)
+    $end            reduce using rule 1 (ensmot -> ensmot WITHIN GROUPE .)
+    )               reduce using rule 1 (ensmot -> ensmot WITHIN GROUPE .)
+
+
+state 20
+
+    (2) ensmot -> ensmot WITHIN NUM .
+
+    WITHIN          reduce using rule 2 (ensmot -> ensmot WITHIN NUM .)
+    |               reduce using rule 2 (ensmot -> ensmot WITHIN NUM .)
+    (               reduce using rule 2 (ensmot -> ensmot WITHIN NUM .)
+    [               reduce using rule 2 (ensmot -> ensmot WITHIN NUM .)
+    $end            reduce using rule 2 (ensmot -> ensmot WITHIN NUM .)
+    )               reduce using rule 2 (ensmot -> ensmot WITHIN NUM .)
+
+
+state 21
+
+    (4) ensmot -> ensmot | ensmot .
+    (1) ensmot -> ensmot . WITHIN GROUPE
+    (2) ensmot -> ensmot . WITHIN NUM
+    (3) ensmot -> ensmot . ensmot
+    (4) ensmot -> ensmot . | ensmot
+    (1) ensmot -> . ensmot WITHIN GROUPE
+    (2) ensmot -> . ensmot WITHIN NUM
+    (3) ensmot -> . ensmot ensmot
+    (4) ensmot -> . ensmot | ensmot
+    (5) ensmot -> . ( ensmot )
+    (6) ensmot -> . ( ensmot ) ?
+    (7) ensmot -> . mot
+    (8) mot -> . [ motmod ]
+    (9) mot -> . [ motmod ] ?
+
+    WITHIN          reduce using rule 4 (ensmot -> ensmot | ensmot .)
+    |               reduce using rule 4 (ensmot -> ensmot | ensmot .)
+    (               reduce using rule 4 (ensmot -> ensmot | ensmot .)
+    [               reduce using rule 4 (ensmot -> ensmot | ensmot .)
+    $end            reduce using rule 4 (ensmot -> ensmot | ensmot .)
+    )               reduce using rule 4 (ensmot -> ensmot | ensmot .)
+
+  ! WITHIN          [ shift and go to state 6 ]
+  ! |               [ shift and go to state 7 ]
+  ! (               [ shift and go to state 2 ]
+  ! [               [ shift and go to state 4 ]
+
+    ensmot                         shift and go to state 5
+    mot                            shift and go to state 3
+
+state 22
+
+    (5) ensmot -> ( ensmot ) .
+    (6) ensmot -> ( ensmot ) . ?
+
+    WITHIN          reduce using rule 5 (ensmot -> ( ensmot ) .)
+    |               reduce using rule 5 (ensmot -> ( ensmot ) .)
+    (               reduce using rule 5 (ensmot -> ( ensmot ) .)
+    [               reduce using rule 5 (ensmot -> ( ensmot ) .)
+    $end            reduce using rule 5 (ensmot -> ( ensmot ) .)
+    )               reduce using rule 5 (ensmot -> ( ensmot ) .)
+    ?               shift and go to state 35
+
+
+state 23
+
+    (8) mot -> [ motmod ] .
+    (9) mot -> [ motmod ] . ?
+
+    WITHIN          reduce using rule 8 (mot -> [ motmod ] .)
+    |               reduce using rule 8 (mot -> [ motmod ] .)
+    (               reduce using rule 8 (mot -> [ motmod ] .)
+    [               reduce using rule 8 (mot -> [ motmod ] .)
+    $end            reduce using rule 8 (mot -> [ motmod ] .)
+    )               reduce using rule 8 (mot -> [ motmod ] .)
+    ?               shift and go to state 36
+
+
+state 24
+
+    (11) motmod -> defmot / . modif
+    (24) modif -> . attval
+    (25) modif -> . modif , attval
+    (26) modif -> .
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    ,               reduce using rule 26 (modif -> .)
+    ]               reduce using rule 26 (modif -> .)
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    modif                          shift and go to state 37
+    attval                         shift and go to state 38
+
+state 25
+
+    (12) motmod -> defmot ZONE . NUM
+
+    NUM             shift and go to state 39
+
+
+state 26
+
+    (14) defmot -> defmot & . defmot
+    (13) defmot -> . attval
+    (14) defmot -> . defmot & defmot
+    (15) defmot -> . defmot | defmot
+    (16) defmot -> . ( defmot )
+    (17) defmot -> . ! defmot
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    (               shift and go to state 12
+    !               shift and go to state 13
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    defmot                         shift and go to state 40
+    attval                         shift and go to state 11
+
+state 27
+
+    (15) defmot -> defmot | . defmot
+    (13) defmot -> . attval
+    (14) defmot -> . defmot & defmot
+    (15) defmot -> . defmot | defmot
+    (16) defmot -> . ( defmot )
+    (17) defmot -> . ! defmot
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    (               shift and go to state 12
+    !               shift and go to state 13
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    defmot                         shift and go to state 41
+    attval                         shift and go to state 11
+
+state 28
+
+    (16) defmot -> ( defmot . )
+    (14) defmot -> defmot . & defmot
+    (15) defmot -> defmot . | defmot
+
+    )               shift and go to state 42
+    &               shift and go to state 26
+    |               shift and go to state 27
+
+
+state 29
+
+    (17) defmot -> ! defmot .
+    (14) defmot -> defmot . & defmot
+    (15) defmot -> defmot . | defmot
+
+  ! shift/reduce conflict for & resolved as shift
+  ! shift/reduce conflict for | resolved as shift
+    /               reduce using rule 17 (defmot -> ! defmot .)
+    ZONE            reduce using rule 17 (defmot -> ! defmot .)
+    ]               reduce using rule 17 (defmot -> ! defmot .)
+    )               reduce using rule 17 (defmot -> ! defmot .)
+    &               shift and go to state 26
+    |               shift and go to state 27
+
+  ! &               [ reduce using rule 17 (defmot -> ! defmot .) ]
+  ! |               [ reduce using rule 17 (defmot -> ! defmot .) ]
+
+
+state 30
+
+    (18) attval -> ATT = . VALATT
+
+    VALATT          shift and go to state 43
+
+
+state 31
+
+    (19) attval -> ATT ~ . VALATT
+
+    VALATT          shift and go to state 44
+
+
+state 32
+
+    (20) attval -> + attval .
+
+    /               reduce using rule 20 (attval -> + attval .)
+    ZONE            reduce using rule 20 (attval -> + attval .)
+    &               reduce using rule 20 (attval -> + attval .)
+    |               reduce using rule 20 (attval -> + attval .)
+    ]               reduce using rule 20 (attval -> + attval .)
+    )               reduce using rule 20 (attval -> + attval .)
+    ,               reduce using rule 20 (attval -> + attval .)
+
+
+state 33
+
+    (21) attval -> - attval .
+
+    /               reduce using rule 21 (attval -> - attval .)
+    ZONE            reduce using rule 21 (attval -> - attval .)
+    &               reduce using rule 21 (attval -> - attval .)
+    |               reduce using rule 21 (attval -> - attval .)
+    ]               reduce using rule 21 (attval -> - attval .)
+    )               reduce using rule 21 (attval -> - attval .)
+    ,               reduce using rule 21 (attval -> - attval .)
+
+
+state 34
+
+    (22) attval -> @ ATT .
+
+    /               reduce using rule 22 (attval -> @ ATT .)
+    ZONE            reduce using rule 22 (attval -> @ ATT .)
+    &               reduce using rule 22 (attval -> @ ATT .)
+    |               reduce using rule 22 (attval -> @ ATT .)
+    ]               reduce using rule 22 (attval -> @ ATT .)
+    )               reduce using rule 22 (attval -> @ ATT .)
+    ,               reduce using rule 22 (attval -> @ ATT .)
+
+
+state 35
+
+    (6) ensmot -> ( ensmot ) ? .
+
+    WITHIN          reduce using rule 6 (ensmot -> ( ensmot ) ? .)
+    |               reduce using rule 6 (ensmot -> ( ensmot ) ? .)
+    (               reduce using rule 6 (ensmot -> ( ensmot ) ? .)
+    [               reduce using rule 6 (ensmot -> ( ensmot ) ? .)
+    $end            reduce using rule 6 (ensmot -> ( ensmot ) ? .)
+    )               reduce using rule 6 (ensmot -> ( ensmot ) ? .)
+
+
+state 36
+
+    (9) mot -> [ motmod ] ? .
+
+    WITHIN          reduce using rule 9 (mot -> [ motmod ] ? .)
+    |               reduce using rule 9 (mot -> [ motmod ] ? .)
+    (               reduce using rule 9 (mot -> [ motmod ] ? .)
+    [               reduce using rule 9 (mot -> [ motmod ] ? .)
+    $end            reduce using rule 9 (mot -> [ motmod ] ? .)
+    )               reduce using rule 9 (mot -> [ motmod ] ? .)
+
+
+state 37
+
+    (11) motmod -> defmot / modif .
+    (25) modif -> modif . , attval
+
+    ]               reduce using rule 11 (motmod -> defmot / modif .)
+    ,               shift and go to state 45
+
+
+state 38
+
+    (24) modif -> attval .
+
+    ,               reduce using rule 24 (modif -> attval .)
+    ]               reduce using rule 24 (modif -> attval .)
+
+
+state 39
+
+    (12) motmod -> defmot ZONE NUM .
+
+    ]               reduce using rule 12 (motmod -> defmot ZONE NUM .)
+
+
+state 40
+
+    (14) defmot -> defmot & defmot .
+    (14) defmot -> defmot . & defmot
+    (15) defmot -> defmot . | defmot
+
+    /               reduce using rule 14 (defmot -> defmot & defmot .)
+    ZONE            reduce using rule 14 (defmot -> defmot & defmot .)
+    &               reduce using rule 14 (defmot -> defmot & defmot .)
+    ]               reduce using rule 14 (defmot -> defmot & defmot .)
+    )               reduce using rule 14 (defmot -> defmot & defmot .)
+    |               shift and go to state 27
+
+  ! |               [ reduce using rule 14 (defmot -> defmot & defmot .) ]
+  ! &               [ shift and go to state 26 ]
+
+
+state 41
+
+    (15) defmot -> defmot | defmot .
+    (14) defmot -> defmot . & defmot
+    (15) defmot -> defmot . | defmot
+
+    /               reduce using rule 15 (defmot -> defmot | defmot .)
+    ZONE            reduce using rule 15 (defmot -> defmot | defmot .)
+    &               reduce using rule 15 (defmot -> defmot | defmot .)
+    |               reduce using rule 15 (defmot -> defmot | defmot .)
+    ]               reduce using rule 15 (defmot -> defmot | defmot .)
+    )               reduce using rule 15 (defmot -> defmot | defmot .)
+
+  ! &               [ shift and go to state 26 ]
+  ! |               [ shift and go to state 27 ]
+
+
+state 42
+
+    (16) defmot -> ( defmot ) .
+
+    /               reduce using rule 16 (defmot -> ( defmot ) .)
+    ZONE            reduce using rule 16 (defmot -> ( defmot ) .)
+    &               reduce using rule 16 (defmot -> ( defmot ) .)
+    |               reduce using rule 16 (defmot -> ( defmot ) .)
+    ]               reduce using rule 16 (defmot -> ( defmot ) .)
+    )               reduce using rule 16 (defmot -> ( defmot ) .)
+
+
+state 43
+
+    (18) attval -> ATT = VALATT .
+
+    /               reduce using rule 18 (attval -> ATT = VALATT .)
+    ZONE            reduce using rule 18 (attval -> ATT = VALATT .)
+    &               reduce using rule 18 (attval -> ATT = VALATT .)
+    |               reduce using rule 18 (attval -> ATT = VALATT .)
+    ]               reduce using rule 18 (attval -> ATT = VALATT .)
+    )               reduce using rule 18 (attval -> ATT = VALATT .)
+    ,               reduce using rule 18 (attval -> ATT = VALATT .)
+
+
+state 44
+
+    (19) attval -> ATT ~ VALATT .
+
+    /               reduce using rule 19 (attval -> ATT ~ VALATT .)
+    ZONE            reduce using rule 19 (attval -> ATT ~ VALATT .)
+    &               reduce using rule 19 (attval -> ATT ~ VALATT .)
+    |               reduce using rule 19 (attval -> ATT ~ VALATT .)
+    ]               reduce using rule 19 (attval -> ATT ~ VALATT .)
+    )               reduce using rule 19 (attval -> ATT ~ VALATT .)
+    ,               reduce using rule 19 (attval -> ATT ~ VALATT .)
+
+
+state 45
+
+    (25) modif -> modif , . attval
+    (18) attval -> . ATT = VALATT
+    (19) attval -> . ATT ~ VALATT
+    (20) attval -> . + attval
+    (21) attval -> . - attval
+    (22) attval -> . @ ATT
+    (23) attval -> . MOT
+
+    ATT             shift and go to state 14
+    +               shift and go to state 15
+    -               shift and go to state 16
+    @               shift and go to state 17
+    MOT             shift and go to state 18
+
+    attval                         shift and go to state 46
+
+state 46
+
+    (25) modif -> modif , attval .
+
+    ,               reduce using rule 25 (modif -> modif , attval .)
+    ]               reduce using rule 25 (modif -> modif , attval .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for & in state 29 resolved as shift
+WARNING: shift/reduce conflict for | in state 29 resolved as shift
