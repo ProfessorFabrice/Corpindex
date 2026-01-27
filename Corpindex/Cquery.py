@@ -69,7 +69,7 @@ class Cquery(object):
 	#   filename : filename path
 	def createNewIndex(self,filename):
 		open(filename,"w").close()
-		idx = Index(filename,self.dbMode,self.verbose)
+		idx = Index(filename,self.dbMode,self.serialize,self.verbose)
 		idx.initDB()
 		idx.initFicDocument()
 		idx.createBase(self.featureList)
@@ -87,7 +87,7 @@ class Cquery(object):
 	#	transTabFiles : a list of rules files		
 	def reindex(self,transTabFiles):
 		self.setTransduction(transTabFiles)
-		nidx = Index(self.filename,self.dbMode,self.verbose)
+		nidx = Index(self.filename,self.dbMode,self.serialize,self.verbose)
 		nidx.initFicDocument()
 		nidx.createBase(self.featureList)
 		nidx.indexTokenTrans(self.defaultIdx,self.trans)

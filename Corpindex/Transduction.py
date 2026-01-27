@@ -32,6 +32,7 @@ class Transduction(object):
 		self.ltt = []
 		self.verb = verb
 		self.module = module
+		self.ensembleTraits = set()
 
 	# appel principal
 	def addRules(self,r):
@@ -42,7 +43,6 @@ class Transduction(object):
 			self.analyse(arbre,0,1)
 			self.afnd2afd()
 			self.modifAutomate()
-			#print("Rules = ",[self.listeTransition,self.tableTransition,self.modif])
 			self.ltt.append([self.listeTransition,self.tableTransition,self.modif])
 	
 	# initialisation de l'automate
@@ -135,7 +135,8 @@ class Transduction(object):
 						cpt+=1
 						res[a[1]+str(cpt)] = memo
 					res[a[1]] = a[2]
-		#print("lecture modification res final=",res) ####
+		for t in res:
+			self.ensembleTraits.add(t)
 		if tr not in self.modif:
 			self.modif[tr] = []
 			self.modif[tr].append(res)		
@@ -510,6 +511,9 @@ class Transduction(object):
 	
 	def getTableTransition(self):
 		return self.ltt
+		
+	def getFeatures(self):
+		return self.ensembleTraits
 		
 	# parcours d'un flux de token et application de l'automate
 	# pas de retour arrière pour l'analyse

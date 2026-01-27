@@ -30,7 +30,7 @@ from .Token import Token
 
 class Hquery(object):
 	
-	def __init__(self,index,query,verb=False,bugv=False,unverify=False,out="",remplace=False,maximum=100,minimum=1,noshow=False,efface=False,concat=False,traits="",separateur=""):
+	def __init__(self,index,query,verb=False,bugv=False,unverify=False,out="",remplace=False,maximum=100,minimum=1,noshow=False,efface=False,concat=False,traits="",separateur="",bloc=False):
 		self.ar = []
 		self.index = index
 		self.verb = verb
@@ -38,7 +38,7 @@ class Hquery(object):
 		self.remplace = remplace
 		self.bugv = bugv
 		self.noshow = noshow
-		self.query = query
+		self.query = re.sub("&quot;","'",query)
 		self.maximum = maximum
 		self.minimum = minimum
 		self.unverify = unverify
@@ -46,8 +46,8 @@ class Hquery(object):
 		self.efface = efface
 		self.concat = concat
 		self.traits = {x.split(":")[0]:x.split(":")[1] for x in traits.split("_")}
-		self.separateur = separateur 
-
+		self.separateur = separateur
+		self.bloc = bloc
 
 	# analyse de la "requête" le résultat est de la forme d'un tableau
 	# 0 -> cqpl égal
@@ -253,12 +253,18 @@ class Hquery(object):
 						elif self.concat:
 							for i in range(debut,fin+1):
 								dicoModif[i] = ["conc",modd]
-							dicoModif[fin] = ["concf",modd]				
-						else:
+							dicoModif[fin] = ["concf",modd]
+						elif self.bloc:
 							if len(modd)>0:
-								dicoModif[debut] = modd
+								dicoModif[debut] = modd	
 							if len(modf)>0:
-								dicoModif[fin] = modf
+								dicoModif[fin] = modf		
+						else:
+							Tab = [(i, v) for (prev_idx, prev_val), (idx, val) in zip(res, res[1:]) for i, v in zip(range(prev_idx, idx), [prev_val]*(idx - prev_idx))] + [res[-1]]
+							for elt in Tab:
+								i = elt[0]
+								if len(elt[1])>0:
+									dicoModif[i] = elt[1]		
 				res = []
 				self.bug = False
 			tok = self.cq.getNextToken()
@@ -272,7 +278,7 @@ def main():
 	parser.add_argument('-i', "--index", type=str, nargs='+',help='fichiers index')
 	parser.add_argument('-q', "--query", type=str, help='requête (non CQPL)')
 	parser.add_argument("-v", "--verbose", help="active affichage informations",action="store_true",default=False)
-	parser.add_argument("-b", "--bug", help="active affichage bugs",action="store_true",default=False)
+	parser.add_argument("-B", "--bug", help="active affichage bugs",action="store_true",default=False)
 	parser.add_argument("-u", "--unverify", help="active recherche sans empilement de début d'empan (genre *? de regexp)",action="store_true",default=False)
 	parser.add_argument('-o', "--output", type=str, help='nom du fichier index transformé',default="")
 	parser.add_argument('-M', "--max", type=int, help="taille max de l'empan",default=100)
@@ -281,8 +287,10 @@ def main():
 	parser.add_argument('-n', "--noshow",action="store_true", help="pas d'affichage du résultat à l'écran",default=False)
 	parser.add_argument('-e', "--efface",action="store_true", help="efface l'empan",default=False)
 	parser.add_argument('-c', "--concat",action="store_true", help="concaténation de l'empan",default=False)
+	parser.add_argument('-b', "--bloc",action="store_true", help="concaténation de l'empan",default=False)
 	parser.add_argument('-t', "--traits",type=str, help="traits à ajouter (si 'concat') de la forma t1:v1_t2:v2",default="l:X_c:Z")
-	parser.add_argument('-s', "--separateur",type=str, help="separateur si concaténation",default="")
+	parser.add_argument('-S', "--separateur",type=str, help="separateur si concaténation",default="")
+	parser.add_argument("-s", "--serializer", help="type de serializer",default='pickle',choices=['pickle','json','msgpack'])
 
 	args = parser.parse_args()
 	args = vars(args)
@@ -301,10 +309,12 @@ def main():
 	concat = args["concat"]
 	trait = args["traits"]
 	separateur = args["separateur"]
+	serializer = args["serializer"]
+	bloc = args["bloc"]
 
 	if indexes:
 		for index in indexes:
-			hq = Hquery(index,query,verb,bugv,unverify,out,remplace,maximum,minimum,noshow,efface,concat,trait,separateur)
+			hq = Hquery(index,query,verb,bugv,unverify,out,remplace,maximum,minimum,noshow,efface,concat,trait,separateur,bloc)
 			hq.main()
 			if remplace:
 				hq.createNewIndex()

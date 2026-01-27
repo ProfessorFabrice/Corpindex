@@ -26,6 +26,7 @@ def main():
 	parser.add_argument('-p', "--python", type=str,help='code python',default="")
 	parser.add_argument('-pa', "--param", type=str,help='paramètres python',default="")
 	parser.add_argument('-r', "--rules", type=str, nargs='+',help='fichiers de règles de transduction',required=True)
+	parser.add_argument("-s", "--serializer", help="type de serializer",default='pickle',choices=['pickle','json','msgpack'])
 	args = parser.parse_args()
 	args = vars(args)
 
@@ -40,6 +41,7 @@ def main():
 	python = args["python"]
 	database = args['database']
 	param = args["param"]
+	serializer = args["serializer"]
 
 	if log == "stderr":
 		ficlog = sys.stderr
@@ -73,7 +75,7 @@ def main():
 	for fic in index:
 		if verb:
 			ficlog.write(fic+'\n')
-		idx = Index(fic,"",verb,ficlog)
+		idx = Index(fic,database,serializer,verb,ficlog)
 		idx.lectureBase()
 		if out != "":
 			output = out
@@ -85,7 +87,7 @@ def main():
 			#rep = "Out"
 			os.mkdir(rep)
 			output = rep+"/"+name
-		nidx = Index(output,database,verb,ficlog)
+		nidx = Index(output,database,serializer,verb,ficlog)
 		nidx.initDB()
 		nidx.initFicDocument()
 		nidx.createBase(listfeature)

@@ -19,7 +19,7 @@ def main():
 	parser = argparse.ArgumentParser(description="interrogation d'un index (version 0.9)")
 	parser.add_argument("-v", "--verbose", help="active affichage informations",action="store_true",default=False)
 	parser.add_argument("-t", "--type", help="type fichier en entrée",default="txt",choices=["txt","xml","csv"])
-	parser.add_argument("-db", "--database", help="type de bdd",default='bsd',choices=['bsd','dbm','dpy'])
+	parser.add_argument("-db", "--database", help="type de bdd",default='bsd',choices=['bsd','dbm','dpy',"lmdb"])
 	#parser.add_argument("-lf", "--listfeature", help="liste de traits",default=['f','l','c','d','m','q'],type=str, nargs='+')
 	parser.add_argument("-lf", "--listfeature", help="liste de traits",type=str, nargs='+')
 	parser.add_argument("-l", "--log", help="fichier de log",default="stderr",type=str)
@@ -42,6 +42,8 @@ def main():
 	rules = args['rules'] 
 	filtre = args['filtre'] 
 	listfeature = args['listfeature']
+	if listfeature  == None:
+		listfeature = ['f','l','c']
 	log = args["log"]
 	serializer = args["serializer"]
 	if args["preproc"] != None:
@@ -74,6 +76,7 @@ def main():
 							if verb:
 								ficlog.write('ajout de la règle : '+r+'\n')
 							trans.addRules(r)
+				listfeature = list(set(listfeature+list(trans.getFeatures())))
 			else:
 				if verb:
 					ficlog.write("fichier inexistant\n")

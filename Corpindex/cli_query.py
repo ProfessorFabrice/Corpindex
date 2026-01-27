@@ -16,6 +16,8 @@ def main():
 	parser = argparse.ArgumentParser(description="interrogation d'un index")
 	parser.add_argument("-v", "--verbose", help="active affichage informations",action="store_true",default=False)
 	parser.add_argument("-l", "--large", help="active le mode 'grand nombre de fichiers'",action="store_true",default=False)
+	parser.add_argument("-db", "--database", help="type de bdd",default='bsd',choices=['bsd','dbm','dpy',"lmdb"])
+	parser.add_argument("-s", "--serializer", help="type de serializer",default='pickle',choices=['pickle','json','msgpack'])
 	parser.add_argument('-i', "--index", type=str, nargs='+',help='fichiers index')
 	parser.add_argument("-q", "--query", type=str, nargs='+', help="requête(s) CQPL/nom d'un fichier",required=True)
 	parser.add_argument("-w", "--word", help="recherche de la forme", action="store_true",default=False)
@@ -49,6 +51,8 @@ def main():
 	feature = args["feature"]
 	typepost = args["typepost"]
 	lstparam = args["postparam"]
+	database = args["database"]
+	serializer = args["serializer"]
 
 	req = Requete()
 	restotal = []
@@ -58,7 +62,7 @@ def main():
 		for f in index:
 			if verb:
 				sys.stderr.write(f+'\n')
-			idx = Index(f,"",verb)
+			idx = Index(f,database,serializer,verb,sys.stderr)
 			idx.lectureBase()
 			if verb:
 				sys.stderr.write('fin initialisation base\n')

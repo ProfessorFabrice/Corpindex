@@ -30,6 +30,7 @@ def main():
 	parser.add_argument("-l", "--level", help="ne retient que les traits avec le level le plus élevé",action="store_true",default=False)
 	parser.add_argument("-o", "--output", help="type de sortie",default="txt",choices=['txt','xml','json','dico','sdico','brut','txtsep'])
 	parser.add_argument('-i', "--index", type=str, nargs='+', help='fichiers index')
+	parser.add_argument("-s", "--size",type=int, help="taille d'une ligne",default=80)
 	parser.add_argument("-f", "--feature",type=str, nargs='+', help="nature des traits",default='f')
 	parser.add_argument('-ident', "--identifiant", help='identifiant',default = "")
 
@@ -45,7 +46,8 @@ def main():
 	divAff = args["div"]
 	level = args["level"]
 	posOff = args["pos"]
-
+	sizeLine = args["size"]
+	 
 	tabul = '\t'
 	nl = '\n'
 	if nosep:
@@ -78,7 +80,7 @@ def main():
 	for elt in index:
 		if verb:
 			sys.stderr.write(elt)
-		idx = Index(elt,"")
+		idx = Index(elt)
 		idx.lectureBase(startt)
 		op = ""
 		div = ""
@@ -118,7 +120,7 @@ def main():
 					else:
 						saut = True 
 					op += t+" "
-				if len(op)>80 and acc == 0 and saut: # saut de ligne
+				if len(op)>sizeLine and acc == 0 and saut: # saut de ligne
 					if len(output)==3:
 						op = re.sub(" ([,.])","\\1",op)
 						op = re.sub("(') ","\\1",op)

@@ -27,7 +27,7 @@ class Token(object):
 		self.__tok[0] = f
 		
 	# retourne le groupe de traits num
-	def getAllFeat(self,num):
+	def getAllFeat(self,num=0):
 		return self.__tok[1][num]
 
 	# ne concerne que le premier par défaut

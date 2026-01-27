@@ -79,7 +79,8 @@ class Index(object):
 			raise ValueError(f"Backend inconnu : {nature}")
 		self.nature = nature
 		# choix du serializer
-		self.serialize = self.getSerializer(serialize)		
+		self.serialize = self.getSerializer(serialize)
+		self.serialType = serialize
 		self.positer = 0 # pointeur pour gérer l'itérateur
 
 	# choix du serialiseur
@@ -133,9 +134,8 @@ Otherwise, a "fileName_idx" directory is created."""
 				
 	# creation des fichiers (index, document) en utilisant des tables de hachage persistantes 
 	# gérées par l'objet "Stock" le jeu d'étiquette est nécessaire sous forme d'un tableau
-	def createBase(self,tags):
+	def createBase(self,tags=['f','l','c']):
 		#self.tags = tags
-		
 		self.tags.append('level')
 		self.divBD = self.backend()
 		self.divBD.open(self.dirName+'/'+self.nomRes+'_div','w')
@@ -664,9 +664,9 @@ Otherwise, a "fileName_idx" directory is created."""
 	def createMeta(self):
 		meta = open(self.dirName+'/'+self.nomRes+"_meta.xml","w",encoding='utf-8')
 		meta.write("<meta>\n")
-		meta.write("\t<list>\n")
-		meta.write("\t\t<item k='tag' v='f:"+":".join(self.tagList)+"'>\n")
-		meta.write("\t</list>\n")
+		meta.write("\t<traits v='f:"+":".join(self.tagList)+"'>\n")
+		meta.write(f"\t<db type='{self.nature}'/>\n")
+		meta.write(f"\t<serializer type='{self.serialType}'/>\n")
 		meta.write("</meta>\n")
 		meta.close()
 	
@@ -790,10 +790,12 @@ Otherwise, a "fileName_idx" directory is created."""
 		
 	# retourne l'ensemble du document via un iterateur
 	# par paquet de 10000 (par defaut)
-	def getIndexTokens(self):
-		offset = 1
+	def getIndexTokens(self,d=1,f=-1):
+		offset = d
 		pileFin = [-1] # sentinelle
-		while offset <= self.getMaxMot():
+		if f == -1:
+			f = self.getMaxMot()
+		while offset <= f:
 			if offset in self.indexDivDebFin: # si balise ouvrant ici
 				for fin in sorted(self.indexDivDebFin[offset].keys(), reverse=True):
 					for div in self.indexDivDebFin[offset][fin]:
