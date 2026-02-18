@@ -23,6 +23,7 @@ from .Concordance import Concordance
 from .Tokxml import Tokxml
 from .Tokcsv import Tokcsv
 from .Dico import Dico
+from .XmlError import XmlError
 from backends.Serialise import *
 from backends.StockBsddb import StockBsddb
 from backends.StockDictPy import StockDictPy
@@ -726,12 +727,12 @@ Otherwise, a "fileName_idx" directory is created."""
 		for i in range(fin+1,min(fin+taille+1,self.maxMot)):
 			pr.append(Token(self.getElement(i)))
 		try:
-			pdeb = self.getDivPos(debut)
-			pfin = self.getDivPos(fin)
+			pdeb = self.getDivPos(debut+1)
+			pfin = self.getDivPos(fin-1)
 			if pdeb == pfin:
 				divPos = pdeb
 			else:
-				divPos = [pdeb[0]]
+				divPos = [pdeb[-1]]
 			#divPos = self.getDivPos(debut)
 		except (IndexError,KeyError): 
 			raise
@@ -742,7 +743,7 @@ Otherwise, a "fileName_idx" directory is created."""
 	def getMaxMot(self):
 		return self.maxMot
 		
-	# retourne 
+	# retourne une table de concordance
 	def getTabConc(self,tabres,taille,nb):
 		"""
 	retourne un tableau de concordances
@@ -756,9 +757,26 @@ Otherwise, a "fileName_idx" directory is created."""
 		if nb !=-1:
 			resort = resort[:nb]
 		for rk in resort:
-			#print(rk)####
 			if rk<self.maxMot:
 				yield self.getResultConc(tabres[rk],rk,taille)
+				
+	# retourne une table d'empan de divisions
+	def getTabDiv(self,tabres,enc=-1,nb=-1):
+		"""
+	retourne un tableau de concordances
+	tabres : tableau de résultats
+	enc : niveau d'encapsulation (-1 plus profond)
+	nb : nombre de concordance
+		"""
+		res = []
+		resort = list(tabres.keys())
+		resort.sort()
+		if nb !=-1:
+			resort = resort[:nb]
+		for rk in resort:
+			if rk<self.maxMot:
+				off = self.getDivPos(tabres[rk])[enc]
+				yield self.getResultConc(off[1],off[2],0)
 		
 	# retourne l'ensemble du document via un iterateur
 	# par paquet de 10000 (par defaut)

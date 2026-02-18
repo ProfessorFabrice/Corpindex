@@ -117,7 +117,18 @@ class Cquery(object):
 	# close default index	
 	def close(self):
 		self.defaultIdx.close()
-
+		
+		
+	# génère une requete cqpl à partir de formes
+	#    tabTok : array of tokens
+	#    feat : feature 
+	#  return
+	#    cqpl request
+	def buildCqplRequest(self,tabTok,feature):
+		sep = '"]['+feature+'="'
+		req = '['+feature+'="'+sep.join(tabTok)+'"]'
+		return req
+		
 	# test Cqpl request
 	#    cqplRequest : cqpl request
 	#  return
@@ -294,7 +305,6 @@ class Cquery(object):
 		else:
 			conc = ["error"]
 		return conc
-		
 		
 	# return the list of each differents features of tokens
 	# retourne la liste des offsets par rapport a une etiquette et sa valeur

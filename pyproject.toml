@@ -23,9 +23,12 @@ dependencies = [
 
 [project.scripts]
 buildidx = "Corpindex.cli_buildidx:main"
+queryx = "Corpindex.cli_queryx:main"
 query = "Corpindex.cli_query:main"
 hquery = "Corpindex.cli_hquery:main"
 idxexport = "Corpindex.cli_idxexport:main"
 idxinfo = "Corpindex.cli_idxinfo:main"
 modidx = "Corpindex.cli_modidx:main"
 modoffidx = "Corpindex.cli_modoffidx:main"
+ztest = "Corpindex.cli_ztest:main"
+

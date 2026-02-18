@@ -120,7 +120,7 @@ def main():
 					else:
 						saut = True 
 					op += t+" "
-				if len(op)>sizeLine and acc == 0 and saut: # saut de ligne
+				if len(op)>sizeLine:# and acc == 0: # saut de ligne
 					if len(output)==3:
 						op = re.sub(" ([,.])","\\1",op)
 						op = re.sub("(') ","\\1",op)

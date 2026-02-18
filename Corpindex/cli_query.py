@@ -27,6 +27,7 @@ def main():
 	parser.add_argument("-f", "--feature",type=str, nargs='+', help="nature du trait",default=['f'])
 	parser.add_argument("-pt", "--typepost", help="nature du post traitement",choices=['out','proc','procout'],default='out')
 	parser.add_argument("-pp", "--postparam", help="paramètres supplémentaires pour le post traitement", type=str, nargs='+')
+	parser.add_argument("-S", "--span", help="active le mode 'récupération de l'empan'",action="store_true",default=False)
 	args = parser.parse_args()
 	args = vars(args)
 
@@ -53,6 +54,7 @@ def main():
 	lstparam = args["postparam"]
 	database = args["database"]
 	serializer = args["serializer"]
+	span = args["span"]
 
 	req = Requete()
 	restotal = []
@@ -96,8 +98,12 @@ def main():
 					idx.lectureBase()
 				tabinfo.append([os.path.basename(idx.getName()),ident])
 				info = len(tabinfo) - 1
-				for pos in idx.getTabConc(res,range,-1):
-					tabconc.append([info,pos])
+				if span:
+					for pos in idx.getTabDiv(res):
+						tabconc.append([info,pos])
+				else:
+					for pos in idx.getTabConc(res,range,-1):
+						tabconc.append([info,pos])
 				if large:
 					idx.close()
 			if verb:
