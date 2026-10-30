@@ -244,6 +244,45 @@ options:
 ``` 
 ---
 
+## Formats d'entrées de corpus étiquetés
+Il est possible de convertir des corpus déjà étiquetés vers un format index manipulable. 
+On utilise pour cela la commande `idxconvert` 
+
+**Json** 
+
+```
+[
+    [["division"]],
+    [forme1,[{f1:val1,f2:val2}]],
+    [forme2,[{f1:val3,f2:val4}]],
+    ...
+    [["/"]]
+]
+```
+
+
+**XML**
+
+```
+<text>
+<div id="division">
+<tok>
+	<feat>
+		<item f1="val1" f2="﻿val2"/>
+	</feat>
+	<w>forme1﻿</w>
+</tok>
+<tok>
+	<feat>
+		<item f1="val3" f2="﻿val4"/>
+	</feat>
+	<w>forme2﻿</w>
+</tok>
+...
+</div>
+</text>
+```
+
 ## Public cible
 
 Corpindex n’est a priori pas destiné à l’utilisateur final non-informaticien, mais à des développeurs ou 

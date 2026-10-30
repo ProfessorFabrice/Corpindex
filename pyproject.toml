@@ -31,4 +31,5 @@ idxinfo = "Corpindex.cli_idxinfo:main"
 modidx = "Corpindex.cli_modidx:main"
 modoffidx = "Corpindex.cli_modoffidx:main"
 ztest = "Corpindex.cli_ztest:main"
+idxconvert = "Corpindex.cli_idxconvert:main"
 

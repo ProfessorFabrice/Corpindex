@@ -136,12 +136,12 @@ def main():
 						else:
 							print('<div id=\"'+tok.getDiv()+'">',end=nl)
 				else:
-					print("<tok>"+nl+tabul+"<infos>",end=nl)
+					print("<tok>"+nl+tabul+"<feat>",end=nl)
 					for i in range(0,tok.getNum()):
 						print(tabul*2+"<item ",end="")
 						print(" ".join([att+'="'+tok.getFeat(att,i)+'"' if tok.getFeat(att,i)!='"' else att+"=\"''\"" for att in tok.getLstFeat(i)]),end="")
 						print("/>",end=nl)
-					print(tabul+"</infos>"+nl+tabul+"<w o=\""+str(offset)+"\">"+tok.getForme()+"</w>",end=nl)
+					print(tabul+"</feat>"+nl+tabul+"<w >"+tok.getForme()+"</w>",end=nl)
 					print("</tok>",end=nl)
 			elif output == "dico":
 				if tok.isDiv() and divAff:
@@ -156,8 +156,6 @@ def main():
 					if posOff:
 						print(str(offset)+"\t",end="")
 					print("\t".join([tok.getFeat(x) for x in feature]))
-					#print(div+"\t".join([tok.getFeat(x) for x in tok.getLstFeat()]))
-					#print(div+"\t".join([tok.getFeat("f"),tok.getFeat("l"),tok.getFeat("c")]))
 			elif output == "sdico":
 				if tok.isDiv() and divAff:
 					div = tok.getDiv()
@@ -168,8 +166,6 @@ def main():
 				else:
 					x = ""
 					sdico.add("\t".join([tok.getFeat(x) for x in feature]))
-					#print(div+"\t".join([tok.getFeat(x) for x in tok.getLstFeat()]))
-					#print(div+"\t".join([tok.getFeat("f"),tok.getFeat("l"),tok.getFeat("c")]))
 			else:
 				tokenBrut = tok.getLowStruct()
 				if len(tokenBrut)>1:

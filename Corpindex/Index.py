@@ -727,8 +727,8 @@ Otherwise, a "fileName_idx" directory is created."""
 		for i in range(fin+1,min(fin+taille+1,self.maxMot)):
 			pr.append(Token(self.getElement(i)))
 		try:
-			pdeb = self.getDivPos(debut+1)
-			pfin = self.getDivPos(fin-1)
+			pdeb = self.getDivPos(min(debut+1,self.maxMot-1))
+			pfin = self.getDivPos(min(fin-1,self.maxMot-1))
 			if pdeb == pfin:
 				divPos = pdeb
 			else:
